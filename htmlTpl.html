@@ -1,0 +1,141 @@
+<!-- ============================================== Подключение слайдера ================================================= -->
+<!-- Слайдер swiper -->
+<!-- -------------------------------------------Подключение стилей------------------------------------------------------ -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+<!-- --------------------------------------------------Конструкция тегов------------------------------------------------- -->
+
+<!-- Главный контейнер -->
+<div class="swiper">
+  <!-- Оболочка -->
+  <div class="swiper-wrapper">
+    <!-- Слайды -->
+    <div class="swiper-slide">Slide 1</div>
+    <div class="swiper-slide">Slide 2</div>
+    <div class="swiper-slide">Slide 3</div>
+    ...
+  </div>
+  <!-- Пагинация -->
+  <div class="swiper-pagination"></div>
+
+  <!-- Стрелки -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+
+  <!-- Скрол -->
+  <div class="swiper-scrollbar"></div>
+</div>
+
+<!-- =========================================Бургер меню=============================================================== -->
+<!-- Мобильное меню -->
+<nav class="nav_box-mob">
+  <div class="nav_box-mob-list"></div>
+</nav>
+<!-- Кнопка меню-бургера -->
+<button class="burger-menu-wrap">
+  <span class="burger-menu"></span>
+</button>
+
+<!-- ================================================Кастомная нумерация списка=========================================  -->
+
+<div class="Элемент для поиска">
+  <!-- <span>Сюда добавиться маркер</span> -->
+  <div class="Элемент к которому добавится маркер">
+    Для производителей
+  </div>
+</div>
+
+<!-- ================================================Попап=========================================  -->
+
+<div class="popup-bg">
+  <div class="popup-wrap">
+    Форма, содержимое попапа
+  </div>
+</div>
+
+<!-- ================================================Спойлер=========================================  -->
+
+<div class="spoiler-box">
+  <div class="spoiler-item">
+    <h3 class="spoiler-title"> заголовок спойлера</h3>
+    <p class="spoiler-text"> контент спойлера</p>
+  </div>
+</div>
+<!--===========================================Анимация переходящего фона==================================== -->
+<!-- сам элемент -->
+<div class="service__content-item">
+  <!-- элемент который будет двигаться и менять фон -->
+  <div class="service__content-item-bg-blue"></div>
+</div>
+
+<!--===========================================увеличенное фото при клике==================================== -->
+<div class="popup-bg">
+  <div class="popup-wrap">
+  </div>
+  <button class="img-exit">х</button>
+</div>
+<!-- =============================================шаблон формы обратной связи===================================== -->
+<!-- сообщение об ошибке -->
+<div class="send-message">
+  <div class="send-message-wrap">
+    <p class="send-message-text"></p>
+  </div>
+</div>
+<!-- форма -->
+<form class="form">
+  <div class="form__row">
+    <label class="form__label" for="name">имя</label>
+    <input id="name" name="name" class="form__input _req" type="text">
+  </div>
+  <div class="form__row">
+    <label class="form__label" for="email">имейл</label>
+    <input id="email" name="email" class="form__input _req _email" type="email">
+  </div>
+  <div class="form__row">
+    <label class="form__label" for="tel">телефон</label>
+    <input id="tel" name="tel" class="form__input" type="tel">
+  </div>
+  <div class="form__row">
+    <label class="form__label" for="text">текст</label>
+    <input id="text" name="text" class="form__text-area" type="text">
+  </div>
+  <div class="form__btn-box">
+    <button class="form__btn">отправить</button>
+  </div>
+  <label class="form__label-checkbox" for="checkbox">Даю согласие на обработку данных</label>
+  <input id="checkbox" class="form__checkbox _req" type="checkbox">
+</form>
+
+<!-- =====================================================табы==================================================== -->
+
+<div class="tabs">
+  <div class="tabs__title-box">
+    <span class="tabs__title">первая вкладка</span>
+    <span class="tabs__title">вторая вкладка</span>
+    <span class="tabs__title">третья вкладка</span>
+  </div>
+  <div class="tabs__item-box">
+    <div class="tabs__item">
+    </div>
+    <div class="tabs__item">
+    </div>
+    <div class="tabs__item">
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================fullscreen==================================================== -->
+
+<div class="wrapper">
+  <section class="fullscreen">
+    <div class="fullscreen__container">
+      <div class="content__wrap">
+        <h1 class="title"></h1>
+        <p class="text"></p>
+      </div>
+      <button class="btn"></button>
+    </div>
+  </section>
+  <section></section>
+  <section></section>
+</div>
