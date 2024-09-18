@@ -1,0 +1,25 @@
+301 редирект с http:// на https:// 
+
+Для всех страниц с http:// на https://
+Для всех страниц с http:// на https://, в том числе и с http://www на https://
+
+RewriteEngine On
+RewriteCond %{SERVER_PORT} !^443$
+RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
+
+Если первый вариант не поможет, воспользуйтесь вторым вариантом:
+
+RewriteEngine On
+RewriteCond %{HTTPS} =off 
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [QSA,L]
+
+Если все варианты не помогли и возникает циклическая переадресация:
+
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteEngine On 
+RewriteCond %{ENV:HTTPS} !on 
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
