@@ -625,3 +625,60 @@ export function getBlueBg() {
     }
 }
 getBlueBg()
+
+// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+// ==================================Валидация формы с помощью jastValidate======================================================
+// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+let count = 1;
+const validator = [];
+$('form').each(function () {
+  $(this).attr('id', `form_${count}`);
+  let id = $(this).attr('id');
+  validator.push(new JustValidate(`#${id}`))
+  count++;
+});
+
+validator.forEach(el => {
+  el
+    .addField('#basic_name', [
+
+      {
+        rule: 'required',
+        errorMessage: 'Поле не должно быть пустым',
+      },
+      {
+        rule: 'minLength',
+        value: 2,
+        errorMessage: 'Должно быть не менее 2 букв',
+      },
+      {
+        rule: 'maxLength',
+        value: 15,
+        errorMessage: 'Должно быть не более 15 букв',
+      },
+
+    ])
+    .addField('#basic_email', [
+      {
+        rule: 'required',
+        errorMessage: 'Поле не должно быть пустым',
+      },
+      {
+        rule: 'required',
+        errorMessage: 'Не верный формат',
+      },
+      {
+        rule: 'email',
+        errorMessage: 'Не верный формат',
+      },
+    ]);
+  el.onSuccess((event) => {
+    event.preventDefault()
+    formSend(el.form);
+  });
+
+
+})
+
+
