@@ -185,3 +185,26 @@ esc_url_raw / 'settings' => 'test_img', / 'type' => 'image',
 Пример:
 
 echo get_theme_mod('test_str');
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ==========================================================Создание виджетов========================================================================= -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+<!-- регистрация нового поля -->
+function remont_custom_widgets_init() {
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Footer' ),
+			'id'            => 'Footer',
+			'description'   => esc_html__( 'Add widgets here.', 'remont' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
+}
+add_action( 'widgets_init', 'remont_custom_widgets_init' );
+
+<!-- вывод в нужном месте -->
+<?php dynamic_sidebar( 'Footer' ); ?>
