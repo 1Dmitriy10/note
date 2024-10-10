@@ -16,7 +16,8 @@ Breadcrumb NavXT ---- Хлебные крошки для shema.org
 Akismet Anti----spam ---- Защита от спама
 Autoptimize ---- Он может агрегировать, минимизировать и кэшировать скрипты и стили
 ReCaptcha for Contact Form 7 ---- защищает вас от спама
-JivoChat Live Chat ---- "Универсальный канал связи специально для электронной коммерции JivoChat – это универсальный бизнес----мессенджер"
+JivoChat Live Chat ---- "Универсальный канал связи специально для электронной коммерции JivoChat – это универсальный
+бизнес----мессенджер"
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -64,13 +65,13 @@ $query = new WP_Query(
     ]
 );
 if (have_posts()) : while ($query->have_posts()) : $query->the_post(); ?>
-        <!-- Вывод постов, функции цикла: the_title() и т.д. -->
+<!-- Вывод постов, функции цикла: the_title() и т.д. -->
 
-        <!-- контент поста the_title(); -->
+<!-- контент поста the_title(); -->
 
-    <?php endwhile;
+<?php endwhile;
 else : ?>
-    Записей нет.
+Записей нет.
 <?php endif; ?>
 <!-- пагинация -->
 <?php the_posts_pagination(); ?>
@@ -128,14 +129,14 @@ add_filter('widget_text', 'do_shortcode');
 // ==================== шорткоды============================
 function them_banner($atts)
 {
-	$atts = shortcode_atts( array(
-		'id' => '',
-	), $atts );
+$atts = shortcode_atts( array(
+'id' => '',
+), $atts );
 
 // параметры по умолчанию
 $my_posts = get_posts( array(
-	'include'     => $atts["id"],
-	'post_type'   => 'katalog',
+'include' => $atts["id"],
+'post_type' => 'katalog',
 ) );
 
 
@@ -159,35 +160,35 @@ add_shortcode('banner', 'them_banner');
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 function имя_функции($wp_customize) {
-	
-	//секция
-	$wp_customize->add_section('имя_секции' , array(
-	  'title'    => 'Телефон',
-	  'priority' => 99,
-	));
 
-	//Поле
-	$wp_customize->add_setting('имя_поля', array(
-	  'capability' => 'edit_theme_options',
-	  'default' => '',
-	  'sanitize_callback' => 'sanitize_text_field', /*тип поля()*/
-	));
+//секция
+$wp_customize->add_section('имя_секции' , array(
+'title' => 'Телефон',
+'priority' => 99,
+));
 
-	// настройки поля
-	$wp_customize->add_control('имя_поля', array(
-	  'type' => 'input',                            /*тип поля()*/
-	  'section' => 'имя_секции',
-	  'label' => 'Телефон',
-	));
+//Поле
+$wp_customize->add_setting('имя_поля', array(
+'capability' => 'edit_theme_options',
+'default' => '',
+'sanitize_callback' => 'sanitize_text_field', /*тип поля()*/
+));
+
+// настройки поля
+$wp_customize->add_control('имя_поля', array(
+'type' => 'input', /*тип поля()*/
+'section' => 'имя_секции',
+'label' => 'Телефон',
+));
 }
 
 <!-- [для изображений] -->
 
 $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'имя_поля', array(
-			'settings' => 'имя_поля',
-			'section' => 'имя_секции',
-			'label' => 'Иконка',
-		  )));
+'settings' => 'имя_поля',
+'section' => 'имя_секции',
+'label' => 'Иконка',
+)));
 <!-- [/для изображений] -->
 
 add_action('customize_register', 'имя_функции');
@@ -220,19 +221,81 @@ echo get_theme_mod('test_str');
 
 <!-- регистрация нового поля -->
 function remont_custom_widgets_init() {
-	register_sidebar(
-		array(
-			'name'          => esc_html__( 'Footer' ),
-			'id'            => 'Footer',
-			'description'   => esc_html__( 'Add widgets here.', 'remont' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
-		)
-	);
+register_sidebar(
+array(
+'name' => esc_html__( 'Footer' ),
+'id' => 'Footer',
+'description' => esc_html__( 'Add widgets here.', 'remont' ),
+'before_widget' => '<section id="%1$s" class="widget %2$s">',
+    'after_widget' => '</section>',
+'before_title' => '<h2 class="widget-title">',
+    'after_title' => '</h2>',
+)
+);
 }
 add_action( 'widgets_init', 'remont_custom_widgets_init' );
 
 <!-- вывод в нужном месте -->
 <?php dynamic_sidebar( 'Footer' ); ?>
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ==========================================================Пример получения постов в таксономии в определенной категории========================================================================= -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+$posts = get_posts( array(
+'tax_query' => array(
+array(
+'taxonomy' => 'nastrojki',
+'field' => 'id',
+'terms' => array( $atts["id"] ),
+)
+),
+'post_type' => 'katalog',
+"posts_per_page" => -1,
+
+) );
+
+
+
+
+$item ='';
+foreach( $posts as $pst ) {
+$pst->post_title
+}
+
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ==========================================================изменение классов у пунктов меню ========================================================================= -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+add_filter( 'nav_menu_css_class', 'change_menu', 10, 4 );
+
+function change_menu( $classes, $item, $args, $depth ) {
+	if ( 'topline_menu' === $args->theme_location || 'header_menu' === $args->theme_location) {
+		$classes = [ 'nav-item' ];
+	} else {
+		$classes = [];
+	}
+
+	return $classes;
+}
+
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ==========================================================изменение классов у submenu ========================================================================= -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+add_filter( 'nav_menu_submenu_css_class', 'change_wp_nav_menu', 10, 3 );
+
+function change_wp_nav_menu( $classes, $args, $depth ) {
+	if ('mob_menu' === $args->theme_location) {
+		foreach ( $classes as $key => $class ) {
+			if ( $class == 'sub-menu' ) {
+				$classes[ $key ] = 'spoiler-content-menu';
+			}
+		}
+	}
+
+
+	return $classes;
+}
