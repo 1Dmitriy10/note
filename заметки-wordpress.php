@@ -274,7 +274,7 @@ $pst->post_title
 }
 
 <!-- =================Через WP_Query======================-->
-
+<?php
 $query = new WP_Query( array(
             'tax_query' => array(
                 array(
@@ -288,17 +288,23 @@ $query = new WP_Query( array(
             	"orderby" => "menu_order",
             	'order'       => 'ASC',
         ) ); 
-        $query->the_post();
-        foreach( $posts as $pst ):
-    ?>
+?>
+<?php
+ if(!empty($query)):
+    while ( $query->have_posts() ):
+    $query->the_post();
+?>
+
+
     <h3>
         <?php the_title();?>
     </h3>
 
-    <?php 
-        endforeach;
-        wp_reset_postdata();
-    ?>
+<?php 
+    endwhile;
+    endif;
+    wp_reset_postdata();
+?>
 
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
