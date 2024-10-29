@@ -633,52 +633,120 @@ getBlueBg()
 let count = 1;
 const validator = [];
 $('form').each(function () {
-  $(this).attr('id', `form_${count}`);
-  let id = $(this).attr('id');
-  validator.push(new JustValidate(`#${id}`))
-  count++;
+    $(this).attr('id', `form_${count}`);
+    let id = $(this).attr('id');
+    validator.push(new JustValidate(`#${id}`))
+    count++;
 });
 
 validator.forEach(el => {
-  el
-    .addField('#basic_name', [
+    el
+        .addField('#basic_name', [
 
-      {
-        rule: 'required',
-        errorMessage: 'Поле не должно быть пустым',
-      },
-      {
-        rule: 'minLength',
-        value: 2,
-        errorMessage: 'Должно быть не менее 2 букв',
-      },
-      {
-        rule: 'maxLength',
-        value: 15,
-        errorMessage: 'Должно быть не более 15 букв',
-      },
+            {
+                rule: 'required',
+                errorMessage: 'Поле не должно быть пустым',
+            },
+            {
+                rule: 'minLength',
+                value: 2,
+                errorMessage: 'Должно быть не менее 2 букв',
+            },
+            {
+                rule: 'maxLength',
+                value: 15,
+                errorMessage: 'Должно быть не более 15 букв',
+            },
 
-    ])
-    .addField('#basic_email', [
-      {
-        rule: 'required',
-        errorMessage: 'Поле не должно быть пустым',
-      },
-      {
-        rule: 'required',
-        errorMessage: 'Не верный формат',
-      },
-      {
-        rule: 'email',
-        errorMessage: 'Не верный формат',
-      },
-    ]);
-  el.onSuccess((event) => {
-    event.preventDefault()
-    formSend(el.form);
-  });
+        ])
+        .addField('#basic_email', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле не должно быть пустым',
+            },
+            {
+                rule: 'required',
+                errorMessage: 'Не верный формат',
+            },
+            {
+                rule: 'email',
+                errorMessage: 'Не верный формат',
+            },
+        ]);
+    el.onSuccess((event) => {
+        event.preventDefault()
+        formSend(el.form);
+    });
 
 
 })
+
+// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+// ==================================mansonry======================================================
+// ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+{/* <div class="_mansonry-js" data-gap="20/40" data-cols="2">               data-gap="20/40" - отступы между колонками и строками
+    <div>item1</div>                                                        data-cols="2" - колличество колонок
+    <div>item2</div>
+    <div>item3</div>
+    <div>...</div>
+</div> */}
+
+// -----------------------------------------------------------------------------------
+
+
+function masonry() {
+    // ---------родительский элемент----------
+    let mansonryWrap = document.querySelector("._mansonry-js");
+    // ---------колличество колонок----------
+    let columns = mansonryWrap.dataset.cols;
+    // ---------отступы----------
+    let row_gap = Number(mansonryWrap.dataset.gap.split("/")[0]);
+    let col_gap = Number(mansonryWrap.dataset.gap.split("/")[1]);
+    //---------массивы----------------- 
+    let firstRow = [];
+    let array = [...mansonryWrap.children];
+
+    // -----------------------стили родителя----------------------
+
+    mansonryWrap.style.cssText = `
+        gap: ${row_gap}px ${col_gap}px;
+    `
+    // -----------------------стили элементов----------------------
+    array.forEach(el => {
+        el.style.cssText = `
+        flex: 0 1 calc((100% - ${columns - 1} * ${col_gap}px) / ${columns});
+        `
+    })
+
+    getmasonry();
+    // ---------------------------------------------
+
+    function getmasonry() {
+
+        for (let index = 0; index < columns; index++) {
+            firstRow.push(mansonryWrap.children[index])
+        }
+
+        firstRow.forEach(el => {
+            el.dataset.height = `${el.offsetTop + el.offsetHeight}`;
+
+        })
+
+        for (let index = columns; index < array.length; index++) {
+            let oldHeight = array[index - columns].dataset.height
+            let newHeight = array[index].offsetTop
+
+            array[index].style.cssText = `
+             margin-top: ${(oldHeight - newHeight) + row_gap}px;
+             flex: 0 1 calc((100% - ${columns - 1} * ${col_gap}px) / ${columns});
+             `
+
+            array[index].dataset.height = `${array[index].offsetTop + array[index].offsetHeight}`;
+        }
+
+    }
+};
+masonry();
 
 
