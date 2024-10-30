@@ -694,7 +694,6 @@ validator.forEach(el => {
 
 // -----------------------------------------------------------------------------------
 
-
 function masonry() {
     // ---------родительский элемент----------
     let mansonryWrap = document.querySelector("._mansonry-js");
@@ -703,24 +702,48 @@ function masonry() {
     // ---------отступы----------
     let row_gap = Number(mansonryWrap.dataset.gap.split("/")[0]);
     let col_gap = Number(mansonryWrap.dataset.gap.split("/")[1]);
+
     //---------массивы----------------- 
     let firstRow = [];
     let array = [...mansonryWrap.children];
+    //---------брейкпоинты----------------- 
+    let breack = {
+        "768": 1
+    }
 
-    // -----------------------стили родителя----------------------
+    for (const key in breack) {
+        if (window.innerWidth < key) {
+            mansonryWrap.dataset.cols = `${breack[key]}`
+            if (breack[key] == "1") {
+                array.forEach(el => {
+                    el.style.cssText = `
+                    flex: 0 1 calc(100%);
+                    `
+                })
+                console.log(mansonryWrap)
+                mansonryWrap.style.cssText = `
+                    gap: ${row_gap}px ${col_gap}px;
+                    `
+            }
+        }
+        else {
+            // -----------------------стили родителя----------------------
 
-    mansonryWrap.style.cssText = `
-        gap: ${row_gap}px ${col_gap}px;
-    `
-    // -----------------------стили элементов----------------------
-    array.forEach(el => {
-        el.style.cssText = `
-        flex: 0 1 calc((100% - ${columns - 1} * ${col_gap}px) / ${columns});
-        `
-    })
+            mansonryWrap.style.cssText = `
+                gap: ${row_gap}px ${col_gap}px;
+                `
+            // -----------------------стили элементов----------------------
+            array.forEach(el => {
+                el.style.cssText = `
+                    flex: 0 1 calc((100% - ${columns - 1} * ${col_gap}px) / ${columns});
+                    `
+            })
+            getmasonry();
+        }
+    }
 
-    getmasonry();
-    // ---------------------------------------------
+
+
 
     function getmasonry() {
 
