@@ -350,3 +350,86 @@ function change_wp_nav_menu( $classes, $args, $depth ) {
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 add_filter('wpcf7_autop_or_not', '__return_false');
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ==========================================================Добавление полей для формы заказа в woocomerce ========================================================================= -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+<!-- -------------добавление полей--------- -->
+---------------------------------------------------------------------------------------------------------
+Хук	Расположение
+woocommerce_before_checkout_billing_form	Перед полями платёжного адреса.
+woocommerce_after_checkout_billing_form	После полей платёжного адреса
+woocommerce_before_checkout_registration_form	Перед формы регистрации.
+woocommerce_after_checkout_registration_form	После формы регистрации.
+woocommerce_before_checkout_shipping_form	Перед полями адреса доставки.
+woocommerce_after_checkout_shipping_form	После полей адреса доставки.
+woocommerce_before_order_notes	Перед полем примечания к заказу.
+woocommerce_after_order_notes	После поля примечания к заказу.
+-------------------------------------------------------------------------------------------------------
+
+add_action( 'woocommerce_before_order_notes', 'addDelivery' );
+ 
+function addDelivery($checkout) {
+	// выводим поле функцией woocommerce_form_field()
+	woocommerce_form_field( 
+		'billing_contactmethod', 
+		array(
+			'type'          => 'select', // text, textarea, select, radio, checkbox, password
+			'required'	=> false, // по сути только добавляет значок "*" и всё
+			'class'         => array( 'true-field', 'form-row-wide' ), // массив классов поля
+			'label'         => 'Выберите способ получения',
+			'label_class'   => 'true-label', // класс лейбла
+			'options'	=> array( // options for  or 
+                ''		=> 'Выберите', // пустое значение
+				'Доставка'	=> 'Доставка', // 'значение' => 'заголовок'
+				'Самовывоз'	=> 'Самовывоз'
+			)
+		),
+		$checkout->get_value( 'contactmethod' )
+	);
+    woocommerce_form_field( 
+		'billing_contactmethod_2', 
+		array(
+			'type'          => 'text', // text, textarea, select, radio, checkbox, password
+			'required'	=> false, // по сути только добавляет значок "*" и всё
+			'class'         => array( 'true-field', 'form-row-wide' ), // массив классов поля
+			'label'         => 'Укажите адрес',
+			'label_class'   => 'true-label', // класс лейбла
+			'options'	=> array( // options for  or 
+
+			)
+		),
+		$checkout->get_value( 'contactmethod' )
+	);
+}
+
+  <!-- ------------------сохранение полей -->
+
+  add_action( 'woocommerce_checkout_update_order_meta', 'true_save_field', 25 );
+ 
+function true_save_field( $order_id ){
+ 
+	if( ! empty( $_POST[ 'billing_contactmethod' ] ) ) {
+		update_post_meta( $order_id, 'billing_contactmethod', sanitize_text_field( $_POST[ 'billing_contactmethod' ] ) );
+	}
+    if(! empty( $_POST[ 'billing_contactmethod' ] ) ) {
+        update_post_meta( $order_id, 'billing_contactmethod_2', sanitize_text_field( $_POST[ 'billing_contactmethod_2' ] ) );
+    }
+ 
+}
+
+ <!-- ------------------добавление этого поля в заказ в админку -->
+
+ ------------------------------------------------------------------------------
+ woocommerce_admin_order_data_after_order_details – если вы хотите добавить информацию в первую колонку, под полем «Клиент».
+woocommerce_admin_order_data_after_billing_address – под платёжным адресом.
+woocommerce_admin_order_data_after_shipping_address – под адресом доставки.
+-----------------------------------------------------------------------------------
+
+add_action( 'woocommerce_admin_order_data_after_shipping_address', 'custom_field_display_admin_order_meta', 10, 1 );
+
+function custom_field_display_admin_order_meta($order){
+    echo '<p><strong>'.__('Способ получения').':</strong> <br>' . get_post_meta( $order->id, 'billing_contactmethod', true ) . '</p>';
+    echo '<p><strong>'.__('Адрес').':</strong> <br>' . get_post_meta( $order->id, 'billing_contactmethod_2', true ) . '</p>';
+}
