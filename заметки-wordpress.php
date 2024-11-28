@@ -434,6 +434,26 @@ function custom_field_display_admin_order_meta($order){
     echo '<p><strong>'.__('Адрес').':</strong> <br>' . get_post_meta( $order->id, 'billing_contactmethod_2', true ) . '</p>';
 }
 
+ <!-- ------------------добавление этого поля в сообщение email -->
+
+add_filter( 'woocommerce_get_order_item_totals', 'truemisha_field_in_email', 25, 2 );
+ 
+function truemisha_field_in_email( $rows, $order ) {
+ 
+ 	// удалите это условие, если хотите добавить значение поля и на страницу "Заказ принят"
+	if( is_order_received_page() ) {
+		return $rows;
+	}
+ 
+	$rows[ 'billing_contactmethod' ] = array(
+		'label' => 'Предпочитаемый метод связи',
+		'value' => get_post_meta( $order->get_id(), 'billing_contactmethod', true )
+	);
+ 
+	return $rows;
+ 
+}
+
 
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 <!-------- ==========================================================Замена текста кнопки добавить в корзину в woocomerce ========================================================================= -------->
