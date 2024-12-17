@@ -485,3 +485,33 @@ woocommerce/includes/class-wc-product-simple.php
  * Network: true
 */
 2) Активировать в админке
+
+
+// ================================= Убирает префикс у таксономии =========================
+// remont заменить на свою таксономию
+
+add_filter( 'post_type_link', 'remove_post_type_slug', 10, 2 );
+add_action( 'pre_get_posts', 'add_post_type_to_get_posts_request' );
+
+// Удаляем префикс с именем типа записи из URL
+function remove_post_type_slug( $post_link, $post ){
+
+	if( $post->post_type === 'remont' ){
+		return str_replace( "/$post->post_type/", '/', $post_link );
+	}
+
+	return $post_link;
+}
+
+// Добавляем тип записи в запрос
+function add_post_type_to_get_posts_request( $query ){
+
+	if( is_admin() || ! $query->is_main_query() )
+		return; // не основной запрос
+
+	// не запрос с name параметром (как у постоянной страницы)
+	if( ! isset($query->query['page']) || empty($query->query['name']) || count($query->query) != 2 )
+		return;
+
+	$query->set('post_type', array('post', 'page', 'remont') ); // 'team' added
+}
