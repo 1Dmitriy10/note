@@ -519,3 +519,24 @@ function add_post_type_to_get_posts_request( $query ){
 
 // ================================= Получить родительскую категорию таксономии по записи =========================
 $cat_obj = get_the_terms($item->ID, 'kategoriya-komandy');
+
+
+//=============================== Замена через буфер ==========================================
+
+add_action('template_redirect', 'set_replace_content', 10, 2);
+
+function set_replace_content()
+{
+    if (is_product()) {
+        ob_start(function (
+            $buffer
+        ) {
+            $buffer = str_ireplace(['<strong>', '</strong>', '<b>', '</b>'], '', $buffer);
+            return $buffer;
+        });
+    }
+}
+
+
+
+
