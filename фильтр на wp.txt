@@ -1,0 +1,224 @@
+=================Получить поля=================
+global $wp_query;
+
+		$tmpArgs = [
+			'product_cat' => $wp_query->query["product_cat"],
+			'orderby' => $wp_query->query_vars["orderby"],
+			'order' => $wp_query->query_vars["order"],
+			"posts_per_page" => 999,
+		];
+
+		$query = new WP_Query($tmpArgs);
+		$posts = $query->posts;
+		$listAttrs = [];
+		$newListAttrs = [];
+
+		foreach ($posts as $arPost){
+			$arrFilter[] = get_post_meta($arPost->ID);
+		}
+
+============= Пример массива полей фильтра ===================
+$arAssocSectionFields = [
+			"ds-razmery", "ds-dlina-shpilki-mm", "ds-diametr-shpilki" , "_price"
+		];
+
+=========== Сравнение полей и формирование нового массива =====================
+foreach($arrFilter as $item) {
+			
+			foreach($item as $key=>$field) {
+				// print_r($key);
+
+				if(in_array($key, $arAssocSectionFields)) {
+					$newArr[$key]["ITEMS"][]=$field[0];
+					$newArr[$key]["ITEMS"] = array_unique($newArr[$key]["ITEMS"]);
+				}
+
+			}
+		}
+
+============= Передать в js ===================
+
+$json = json_encode($arNewArr);
+
+<script type="text/javascript">
+					window.globalVar = `{$json}`;
+				</script>
+
+========================== JS ==================================
+
+jQuery(function ($) {
+    $(document).ready(function () {
+        let arrFilter = JSON.parse(globalVar);
+
+        filterWrap = '',
+            arrItems = [];
+
+
+        // ==========сортировка===============
+        for (const key in arrFilter) {
+            let item = { [key]: arrFilter[key] };
+            let type = arrFilter[key].TYPE;
+            switch (type) {
+                case 'RANGE':
+                    renderRange(item);
+                    break;
+                case 'CHECKBOX':
+                    renderCheckbox(item);
+                    break;
+            }
+        }
+
+
+
+        // ============отрисовка==============
+        function renderRange(el) {
+            let slag = Object.keys(el);
+            let range = el[slag].VALUES;
+            // let item = el.VALUES;
+            filterWrap = $('.range-box');
+            filterWrap.append(`
+                
+        <div class="ds_smart_filter_row">
+
+            <div class="ds_smart_filter_title">${slag}</div>
+
+            <div class="ds_smart_filter_inputs">
+
+                <div class="ds_smart_filter_items">
+
+                    <div class="ds_smart_filter_input">
+                        <input type="text" placeholder="от ${range.MIN}" name="${slag}[RANGE][FROM]">
+                    </div>
+
+                    <div class="ds_smart_filter_input">
+                        <input type="text" placeholder="до ${range.MAX}" name="${slag}[RANGE][TO]">
+                    </div>
+                </div>
+
+                <div class="ds_smart_filter_input_range" data-default-min="${range.MIN}" data-default-max="${range.MAX}" data-min="${Number(range.MIN) + 20}" data-max="${Number(range.MAX) - 20}"></div>
+            </div>
+        </div>
+        `)
+
+        }
+
+        function renderCheckbox(el) {
+
+            let slag = Object.keys(el);
+            let items = el[slag].ITEMS;
+            let count = 1;
+
+            filterWrap = $('.checkbox-box-row');
+            slag.forEach(title => {
+                filterWrap.append(`
+                    <div class="ds_smart_filter_title">${slag}</div>
+                    `);
+
+                items.forEach(item => {
+                    filterWrap.append(`
+
+                            <div class="ds_smart_filter_checkbox">
+                                   <input type="checkbox" id="${slag}_${count}" name="${slag}[CHECKBOX][]" value="${item}">
+                                    <label for="${slag}_${count}">${item}</label>
+                            </div>
+           `)
+                    count++;
+                });
+            })
+
+
+
+        }
+
+
+        if ($("body").find(".ds_smart_filter_input_range").length > 0) {
+            $("body").find(".ds_smart_filter_input_range").each(function () {
+                $this = $(this);
+                $thisDefaultMin = Number($this.data("default-min"));
+                $thisDefaultMax = Number($this.data("default-max"));
+                $thisMin = Number($this.data("min"));
+                $thisMax = Number($this.data("max"));
+
+                if ($thisMin && $thisMax) {
+                    $this.slider({
+                        animate: "slow",
+                        range: true,
+                        min: $thisDefaultMin,
+                        max: $thisDefaultMax,
+                        values: [$thisMin, $thisMax],
+                        slide: function (event, ui) {
+                            $thisParent = $(event.target).prev();
+                            $thisParent.find(".ds_smart_filter_input:eq(0) input[type=text]").val(ui.values[0]);
+                            $thisParent.find(".ds_smart_filter_input:eq(1) input[type=text]").val(ui.values[1]);
+                        }
+                    });
+                }
+            });
+        }
+
+    });
+
+});
+
+================ Сам фильтр =================
+			$getParams = $_GET;
+
+
+			// Тут принцип такой, что в meta_query у нас будет попадать get запрос, и выбиратся из базы то что нам надо. Нужно доработать получение GET запросов и формирование массива meta_query
+			// Ссылка на изучение если что https://wpmag.ru/2014/rabota-s-proizvolnyimi-polyami-v-wp_query/
+			// https://wp-kama.ru/function/wp_query
+			// $arMetaQuery = [];
+			$count = 0;
+			$arMetaQuery = [];
+			if (count($getParams) >= 2) {
+				$arMetaQuery["relation"] = "AND";
+			}
+
+			foreach ($getParams as $key => $param) {
+				if ($key == "dev_dius") continue;
+
+					
+				
+					if(!empty($param["RANGE"])){
+						
+						if(empty($param["RANGE"]["FROM"]) ) {
+							
+							$param["RANGE"]["FROM"] = 0;
+							
+						}
+						if(empty($param["RANGE"]["TO"])) {
+							$param["RANGE"]["TO"] = 9999;
+						}
+						
+						$arMetaQuery[] = [
+											"key" => "$key",
+											'value' => array( $param["RANGE"]["FROM"], $param["RANGE"]["TO"] ),
+											"compare" => "BETWEEN"
+										];
+
+					}elseif(!empty($param["CHECKBOX"]) ) {
+
+						$arMetaQuery[] = [
+							"key" => "{$key}",
+							"value" => array( ...$param["CHECKBOX"] ),
+							"compare" => "IN"
+						];
+
+					}
+
+			}
+
+			$tmpArgs = [
+				'product_cat' => $wp_query->query["product_cat"],
+				'orderby' => $wp_query->query_vars["orderby"],
+				'order' => $wp_query->query_vars["order"],
+				'meta_query' => $arMetaQuery,
+			];
+
+			$query = new WP_Query($tmpArgs);
+
+			$wp_query->posts = $query->posts;
+			$wp_query->post_count = $query->post_count;
+			$wp_query->found_posts = $query->found_posts;
+			$wp_query->max_num_pages = $query->max_num_pages;
+
