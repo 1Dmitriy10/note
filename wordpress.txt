@@ -515,3 +515,7 @@ function add_post_type_to_get_posts_request( $query ){
 
 	$query->set('post_type', array('post', 'page', 'remont') ); // 'team' added
 }
+
+
+// ================================= Получить родительскую категорию таксономии по записи =========================
+$cat_obj = get_the_terms($item->ID, 'kategoriya-komandy');
