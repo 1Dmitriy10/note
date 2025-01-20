@@ -517,6 +517,7 @@ function add_post_type_to_get_posts_request( $query ){
 }
 
 
+<<<<<<< Updated upstream
 // ================================= Получить родительскую категорию таксономии по записи =========================
 $cat_obj = get_the_terms($item->ID, 'kategoriya-komandy');
 
@@ -540,3 +541,59 @@ function set_replace_content()
 
 
 
+=======
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-------- ================================================================Интеграция с чат-ботом телеграм=============================================================================== -------->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+add_action( 'wpcf7_mail_sent', 'your_wpcf7_mail_sent_function' );
+	function your_wpcf7_mail_sent_function($contact_form){
+		//результат
+		$arResult = [];
+		//нужные поля из cf7
+		$arAssoc = [
+			'text-48' => 'Имя клиента',
+			'your-name' => 'Имя клиента',
+			'your-phone' => 'Телефон',
+			'tel-340' => 'Телефон',
+			'your-email' => 'Email',
+			'date-665' => 'Дата для записи',
+			'menu-370' => 'Название услуги',
+			'usluga' => 'Название услуги',
+			'menu-372' => 'К доктору',
+			'text-69' => 'К доктору',
+			
+		];
+		//Заголовок формы
+		$title = $contact_form->title;
+		$posted_data = $contact_form->posted_data;
+
+		$submission = WPCF7_Submission::get_instance();
+		$posted_data = $submission->get_posted_data();
+				
+		// telegram integration 
+		//токен из телеграм
+		$token = '8137445473:AAFY1fly-l9BVK-zMtfYwfmxH4JhfF36G6c';
+		//id чата куда будет приходить письма
+		$chat_id = '-4759692378';	
+		//текст письма
+		$txt .= "{$title} %0A";
+		//если в cf7 есть поля, которые мы указали вначале, то добавлять поля эти поля и значения в массив
+		foreach($posted_data as $key=>$val){
+			
+			if(array_key_exists($key, $arAssoc) && $val){
+				
+				$arResult[$arAssoc[$key]] = $val;
+			}
+		}
+		// добавить в текс все поля из резултатирующего массива
+		foreach($arResult as $k => $v){
+			$txt .= "<b>".$k.": </b> " . $v . "%0A";
+		}
+		//если текст не пуст отправить его в телеграм						
+		if(isset($txt) && $txt){
+			$txt = str_ireplace(['<br />','<br/>','<br>'], '', $txt);
+			$sendToTelegram = fopen("https://api.telegram.org/bot{$token}/sendMessage?chat_id={$chat_id}&parse_mode=html&text={$txt}","r");
+		}
+	}
+>>>>>>> Stashed changes
