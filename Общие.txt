@@ -353,3 +353,38 @@ a:hover {
 
 <input type="range" value="24" min="1" max="100" oninput="this.nextElementSibling.value = this.value">
 <output>24</output>
+
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+<!-- ===================================================== ajax подгрузка кол-ва товаров на кнопке показать ==================================================== -->
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+//============  Событие на инпуты
+ $("body").on("change", "input[type=checkbox]", function () {
+    setCountItems();
+ });
+
+            function setCountItems() {
+			//============  Форма
+                var filterForm = $("body").find(".ds_smart_filter form");
+
+                $.ajax({
+                    type: 'GET',
+                    url: location.pathname + '?' + filterForm.serialize(), //============  отправка запроса
+                    success: function (data) {
+                        if ($(data).find(".w-grid.hide_on_mobiles article").length) {
+                            $count = $(data).find(".w-grid.hide_on_mobiles article").length; //============  Найти колличество товаров на странице
+
+                            if (typeof ($count) != "undefined") {
+                                if ($("body").find(".ds_smart_filter_submit").length > 0) {
+                                    $("body").find(".ds_smart_filter_submit .ds_smart_filter_btn").text("Показать " + $count + " товаров."); //============  Задать кнопке нужное значение
+                                    $("body").find(".ds_smart_filter_submit .ds_smart_filter_btn").removeAttr("disabled");
+                                }
+                            } else {
+                                $("body").find(".ds_smart_filter_submit .ds_smart_filter_btn").attr("disabled", "disabled");
+
+                            }
+
+                        }
+                    }
+                });
+            }
