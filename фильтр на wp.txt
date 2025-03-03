@@ -193,7 +193,8 @@ jQuery(function ($) {
 						$arMetaQuery[] = [
 											"key" => "$key",
 											'value' => array( $param["RANGE"]["FROM"], $param["RANGE"]["TO"] ),
-											"compare" => "BETWEEN"
+											"compare" => "BETWEEN",
+											'type' => 'DECIMAL(10,3)',
 										];
 
 					}elseif(!empty($param["CHECKBOX"]) ) {
