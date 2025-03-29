@@ -277,7 +277,7 @@ if(CModule::IncludeModule("iblock")) {
             false,
             false, 
             array( // Нужны только названиеи ссылка
-                "NAME"
+                "NAME",
                 "DETAIL_PAGE_URL"
              ),
    );
