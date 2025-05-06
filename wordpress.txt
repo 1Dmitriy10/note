@@ -300,6 +300,7 @@ $query = new WP_Query( array(
                 )
             ),
             	'post_type' => 'otzyvy',	//Тип записи, который привязан к таксономии
+				"post__in" => array( 2, 5, 12, 14, 20 ), id постов которые нужно вывести
             	"posts_per_page" => -1,
             	"orderby" => "menu_order",
             	'order'       => 'ASC',
