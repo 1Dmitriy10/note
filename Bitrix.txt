@@ -367,10 +367,46 @@ echo "</pre>";
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+<<<<<<< Updated upstream
 <!--===========================Создание миниатюр==========================================-->
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 <?
 $file = CFile::ResizeImageGet($arItem["DETAIL_PICTURE"]["ID"], array('width'=>120, 'height'=>'120'), BX_RESIZE_IMAGE_EXACT, true);
 ?>
+=======
+<!--===========================Валидация формы по времени==========================================-->
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+в файле /public_html/local/php_interface/init.php
+
+AddEventHandler("form", "onBeforeResultAdd", "checkWebFormTimestamp");
+function checkWebFormTimestamp($WEB_FORM_ID, &$arFields, &$arrVALUES)
+{
+    if ($WEB_FORM_ID == "8") {
+        $timestamp = intval($arrVALUES['form_hidden_55']);
+        $check = $arrVALUES['form_hidden_56'];
+        $currentTime = time();
+        
+        if ($currentTime - $timestamp < 30) {
+            $GLOBALS['APPLICATION']->ThrowException("Форма заполнена слишком быстро");
+            return false;
+        }
+        
+        if (!empty($check)) {
+            $GLOBALS['APPLICATION']->ThrowException("Бот");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+js
+function getTimeStamp(){
+		let hiddenTimestamp = document.querySelector("form[name='FORM_SUBSCRIPTION'] input[name='form_hidden_55']");
+		hiddenTimestamp.value = Math.round(new Date().getTime() / 1000);
+	}
+	getTimeStamp()
+
+>>>>>>> Stashed changes
 
